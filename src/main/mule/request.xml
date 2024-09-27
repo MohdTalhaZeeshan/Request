@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="09e83573-e25f-4a60-ad90-f89c81a0b4bc" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="b7d38b4e-7e8a-4ce3-a980-2c7dae28f8e5" basePath="/api/v2">
+		<http:request-connection protocol="HTTPS" host="pokeapi.co" port="443" />
+	</http:request-config>
+	<flow name="requestFlow" doc:id="1e05a4f5-0a61-4e2f-8f3a-3e839f18a2e9" >
+		<http:listener doc:name="Listener" doc:id="3f0129cd-caaa-43ba-85ed-77a927c9ace3" path="req" config-ref="HTTP_Listener_config"/>
+		<http:request method="GET" doc:name="Request" doc:id="afae9170-1937-4ac8-bba8-6dd06152f0b6" config-ref="HTTP_Request_configuration" path="/pokemon-species/{name}" responseTimeout="#[30000]">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"name" : "aegislash"
+}]]]></http:uri-params>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="c676afbf-ca83-42b3-bc55-c2a7e8551303" message="#[payload]"/>
+	</flow>
+</mule>
